@@ -46,6 +46,14 @@ export type SoftSkill = {
 
 export type SoftSkillFragment = { __typename?: 'SoftSkill', id: string, name: string, description?: string | null };
 
+export type CreateSoftSkillMutationVariables = Exact<{
+  name: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateSoftSkillMutation = { __typename?: 'Mutation', softSkill: { __typename?: 'SoftSkill', id: string, name: string, description?: string | null } };
+
 export type SoftSkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -58,6 +66,40 @@ export const SoftSkillFragmentDoc = gql`
   description
 }
     `;
+export const CreateSoftSkillDocument = gql`
+    mutation createSoftSkill($name: String!, $description: String) {
+  softSkill: createSoftSkill(name: $name, description: $description) {
+    ...SoftSkill
+  }
+}
+    ${SoftSkillFragmentDoc}`;
+export type CreateSoftSkillMutationFn = Apollo.MutationFunction<CreateSoftSkillMutation, CreateSoftSkillMutationVariables>;
+
+/**
+ * __useCreateSoftSkillMutation__
+ *
+ * To run a mutation, you first call `useCreateSoftSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSoftSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSoftSkillMutation, { data, loading, error }] = useCreateSoftSkillMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *   },
+ * });
+ */
+export function useCreateSoftSkillMutation(baseOptions?: Apollo.MutationHookOptions<CreateSoftSkillMutation, CreateSoftSkillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSoftSkillMutation, CreateSoftSkillMutationVariables>(CreateSoftSkillDocument, options);
+      }
+export type CreateSoftSkillMutationHookResult = ReturnType<typeof useCreateSoftSkillMutation>;
+export type CreateSoftSkillMutationResult = Apollo.MutationResult<CreateSoftSkillMutation>;
+export type CreateSoftSkillMutationOptions = Apollo.BaseMutationOptions<CreateSoftSkillMutation, CreateSoftSkillMutationVariables>;
 export const SoftSkillsDocument = gql`
     query softSkills {
   softSkills {
