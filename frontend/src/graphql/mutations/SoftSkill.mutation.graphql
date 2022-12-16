@@ -1,5 +1,0 @@
-mutation createSoftSkill($name: String!, $description: String) {
-  softSkill: createSoftSkill(name: $name, description: $description) {
-    ...SoftSkill
-  }
-}
