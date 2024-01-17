@@ -1,31 +1,74 @@
-import { FC } from "react";
+import { useQuery } from "@apollo/client";
+import { Loader } from "components/atoms/Loader";
+import {
+  SoftSkill,
+  SoftSkillsDocument,
+  SoftSkillsQuery,
+  SoftSkillsQueryVariables,
+} from "generated/graphql";
+import filterSkillByName from "libs/filterSkillByName";
+import debounce from "lodash.debounce";
+import { FC, useEffect, useRef, useState } from "react";
+import List from "./List";
+import Wrapper from "./Wrapper";
 import "./styles.scss";
-import { TextInputField } from "components/molecules/TextInputField";
-import { SoftSkillsList } from "./SoftSkillsList";
+import type { HandleSearch } from "./types";
 
 interface ISoftSkills {}
 
 const SoftSkills: FC<ISoftSkills> = () => {
-  // TODO: 1. Implement getting soft skills from api.
+  const { data, loading, error } = useQuery<
+    SoftSkillsQuery,
+    SoftSkillsQueryVariables
+  >(SoftSkillsDocument);
 
-  // TODO: 3. Implement logic for searching soft skills.
+  const [search, setSearch] = useState<string>("");
+  const [results, setResults] = useState<SoftSkill[]>(data?.softSkills ?? []);
+
+  const debounceRef = useRef(
+    debounce((value: string) => {
+      setSearch(value);
+    }, 1000)
+  );
+
+  const handleSearch: HandleSearch = (value) => {
+    if (debounceRef.current) debounceRef.current(value);
+  };
+
+  useEffect(() => {
+    // NOTE: depending on the complexity and length of data,
+    // a BE/DB search would likely be better
+
+    // Filter by capitalization agnostic skill name
+    if (data?.softSkills) {
+      const filtered = filterSkillByName(data.softSkills, search);
+      setResults(filtered);
+    }
+  }, [data, search]);
+
+  if (loading) {
+    return (
+      <Wrapper handleSearch={handleSearch}>
+        <Loader />
+      </Wrapper>
+    );
+  }
+
+  // Error or lack of data if loading is finished
+  // This can be improved by letting the user know what
+  // actions they can take to resolve the issue
+  if (error || (!data && !loading)) {
+    return (
+      <Wrapper handleSearch={handleSearch}>
+        <p>Something bad has happened 😔</p>
+      </Wrapper>
+    );
+  }
 
   return (
-    <div className="soft-skills">
-      <div className="soft-skills__content">
-        <h1 className="soft-skills__title">Soft Skills</h1>
-        <div className="soft-skills__actions">
-          <TextInputField
-            id="search"
-            label="Search"
-            placeholder="Search"
-            onChange={() => {}}
-            value={""}
-          />
-        </div>
-        <SoftSkillsList />
-      </div>
-    </div>
+    <Wrapper handleSearch={handleSearch}>
+      <List skills={results} />
+    </Wrapper>
   );
 };
 

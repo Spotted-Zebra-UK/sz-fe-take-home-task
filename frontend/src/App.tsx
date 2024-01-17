@@ -1,9 +1,9 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { FC } from "react";
 import SoftSkills from "./views/SoftSkills";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/",
+  uri: "http://localhost:4000/", // TODO: move to a config
   cache: new InMemoryCache(),
 });
 

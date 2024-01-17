@@ -1,4 +1,3 @@
-import React from "react";
 import { FieldLabel, IFieldLabel } from "components/atoms/FieldLabel";
 import { ITextInputProps, TextInput } from "components/atoms/TextInput";
 
@@ -17,7 +16,7 @@ export const TextInputField = ({
 }: TextInputFieldProps) => (
   <FieldLabel
     label={label}
-    displayLabel={!!value}
+    displayLabel={true}
     hasError={hasError}
     id={id}
     bottomText={bottomText}
